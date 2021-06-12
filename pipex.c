@@ -6,7 +6,7 @@
 /*   By: ehakam <ehakam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/11 18:12:41 by ehakam            #+#    #+#             */
-/*   Updated: 2021/06/12 17:41:41 by ehakam           ###   ########.fr       */
+/*   Updated: 2021/06/12 21:26:16 by ehakam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int		p_error(char *arg, char *message)
 	return (0);
 }
 
-char *ft_substr2(char *str, int from, int to)
+char	*ft_substr2(char *str, int from, int to)
 {
 	int i;
 	int len;
@@ -105,7 +105,7 @@ int		set_redirection(t_redir *redir)
 	if (fd < 0)
 	{
 		p_error(redir->arg, NULL);
-		exit(100000); // TODO: Handle permission denied and File Doesn't exist
+		exit(11); // TODO: Handle permission denied and File Doesn't exist
 	}
 	if (redir->type == left)
 		dup2(fd, 0);
@@ -215,7 +215,7 @@ int		execute(t_cmd *cmd, char **env, int fd[2], int index)
 	if (pid < 0)
 	{
 		p_error(NULL, NULL);
-		exit(1000000); // TODO: Fork failed
+		exit(8); // TODO: Fork failed
 	}
 	if (pid == 0)
 	{
@@ -225,18 +225,24 @@ int		execute(t_cmd *cmd, char **env, int fd[2], int index)
 		if (is_path(cmd->argv[0]))
 		{
 			execve(cmd->argv[0], cmd->argv, env);
-			p_error(cmd->argv[0], NULL);
-			exit(10000); // TODO: File not found or permission Denied
+			p_error(cmd->argv[0], "ZBI");
+			exit(9); // TODO: File not found or permission Denied
 		}
 		paths = get_paths(getenv("PATH"), cmd->argv[0]);
 		i = -1;
 		while (paths[++i])
+		{
 			execve(paths[i], cmd->argv, env);
+			if (errno != 2)
+				break ;
+		}
 		if (getenv("PATH") == NULL)
 			p_error(cmd->argv[0], NULL);
+		else if (errno == 13)
+			p_error(paths[i], NULL);
 		else
 			p_error(cmd->argv[0], "command not found");
-		exit(10000); // TODO: Command not found
+		exit(10); // TODO: Command not found
 	}
 	return (pid);
 }
@@ -247,7 +253,8 @@ int		main(int ac, char **av, char **env)
 	pid_t	pid[2];
 	t_cmd	*cmd1;
 	t_cmd	*cmd2;
-	int		status;
+	int		status = 15;
+	int		status2 = 15;
 
 	if (ac != 5)
 		return (1);
@@ -264,7 +271,7 @@ int		main(int ac, char **av, char **env)
 	pid[1] = execute(cmd2, env, fd, 1);
 	close(fd[0]);
 	close(fd[1]);
-	waitpid(pid[0], &status, 0);
-	waitpid(pid[1], &status, 0);
-	return (status);
+	waitpid(pid[0], NULL, WUNTRACED);
+	waitpid(pid[1], &status2, WUNTRACED);
+	return (WEXITSTATUS(status2));
 }
