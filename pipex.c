@@ -6,11 +6,27 @@
 /*   By: ehakam <ehakam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/11 18:12:41 by ehakam            #+#    #+#             */
-/*   Updated: 2021/06/11 21:47:43 by ehakam           ###   ########.fr       */
+/*   Updated: 2021/06/12 17:41:41 by ehakam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+int		p_error(char *arg, char *message)
+{
+	write(2, "pipex: ", 7);
+	if (arg)
+	{
+		write(2, arg, strlen(arg));
+		write(2, ": ", 2);
+	}
+	if (message)
+		write(2, message, strlen(message));
+	else
+		write(2, strerror(errno), strlen(strerror(errno)));
+	write(2, "\n", 1);
+	return (0);
+}
 
 char *ft_substr2(char *str, int from, int to)
 {
@@ -66,11 +82,13 @@ int		set_pipe(int fd[2], int index)
 	{
 		dup2(fd[1], 1);
 		close(fd[0]);
+		close(fd[1]);
 	}
 	else if (index == 1)
 	{
 		dup2(fd[0], 0);
 		close(fd[1]);
+		close(fd[0]);
 	}
 	return (0);
 }
@@ -85,7 +103,10 @@ int		set_redirection(t_redir *redir)
 		fd = open(redir->arg, O_CREAT | O_TRUNC | O_WRONLY,
 				S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd < 0)
+	{
+		p_error(redir->arg, NULL);
 		exit(100000); // TODO: Handle permission denied and File Doesn't exist
+	}
 	if (redir->type == left)
 		dup2(fd, 0);
 	else if (redir->type == right)
@@ -192,7 +213,10 @@ int		execute(t_cmd *cmd, char **env, int fd[2], int index)
 
 	pid = fork();
 	if (pid < 0)
+	{
+		p_error(NULL, NULL);
 		exit(1000000); // TODO: Fork failed
+	}
 	if (pid == 0)
 	{
 		set_pipe(fd, index);
@@ -201,12 +225,17 @@ int		execute(t_cmd *cmd, char **env, int fd[2], int index)
 		if (is_path(cmd->argv[0]))
 		{
 			execve(cmd->argv[0], cmd->argv, env);
+			p_error(cmd->argv[0], NULL);
 			exit(10000); // TODO: File not found or permission Denied
 		}
 		paths = get_paths(getenv("PATH"), cmd->argv[0]);
 		i = -1;
 		while (paths[++i])
 			execve(paths[i], cmd->argv, env);
+		if (getenv("PATH") == NULL)
+			p_error(cmd->argv[0], NULL);
+		else
+			p_error(cmd->argv[0], "command not found");
 		exit(10000); // TODO: Command not found
 	}
 	return (pid);
@@ -226,13 +255,16 @@ int		main(int ac, char **av, char **env)
 	cmd2 = create_cmd(av, 1);
 
 	if (pipe(fd) < 0)
+	{
+		perror("pipex 238");
 		exit(10000); // TODO: PIPE failed
+	}
 
 	pid[0] = execute(cmd1, env, fd, 0);
 	pid[1] = execute(cmd2, env, fd, 1);
 	close(fd[0]);
 	close(fd[1]);
-	waitpid(pid[0], &status, WNOHANG);
-	waitpid(pid[1], &status, WNOHANG);
-	return (13);
+	waitpid(pid[0], &status, 0);
+	waitpid(pid[1], &status, 0);
+	return (status);
 }

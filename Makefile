@@ -6,7 +6,7 @@
 #    By: ehakam <ehakam@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/11 21:05:20 by ehakam            #+#    #+#              #
-#    Updated: 2021/06/11 21:48:18 by ehakam           ###   ########.fr        #
+#    Updated: 2021/06/12 16:54:22 by ehakam           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ NAME	= pipex
 all: $(NAME)
 
 $(NAME): $(SRC)
-	@gcc $(SRC) -g -o $(NAME)
+	@gcc $(SRC) -o $(NAME)
 
 clean:
 	@rm -rf *.o
