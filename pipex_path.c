@@ -6,7 +6,7 @@
 /*   By: ehakam <ehakam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/13 17:39:17 by ehakam            #+#    #+#             */
-/*   Updated: 2021/06/13 19:00:00 by ehakam           ###   ########.fr       */
+/*   Updated: 2021/06/13 20:34:53 by ehakam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,19 @@
 
 t_bool	is_path(char *cmd)
 {
-	int		i;
+	int	i;
 
 	i = -1;
 	while (cmd[++i])
 		if (cmd[i] == '/')
-			return true;
-	return (false);	
+			return (true);
+	return (false);
 }
 
-int		get_path_num(char *path_str)
+int	get_path_num(char *path_str)
 {
-	int		i;
-	int		num;
+	int	i;
+	int	num;
 
 	num = 5;
 	if (!path_str)
@@ -42,14 +42,16 @@ int		get_path_num(char *path_str)
 
 char	*append_cmd_to_path(char *path, char *cmd)
 {
-	int		i;
-	int		j;
-	char	*out;
-	const	int len = ft_strlen(path) + ft_strlen(cmd) + 2;
-	
+	int			i;
+	int			j;
+	char		*out;
+	const int	len = ft_strlen(path) + ft_strlen(cmd) + 2;
+
 	i = 0;
 	j = 0;
 	out = (char *)malloc(len * sizeof(char));
+	if (!out)
+		exit(1);
 	while (path[i])
 		out[j++] = path[i++];
 	out[j++] = '/';
@@ -76,10 +78,10 @@ char	*get_path(char *path_str, char *cmd, int *start, int end)
 
 char	**get_paths(char *path_str, char *cmd)
 {
-	char **paths;
-	int end;
-	int start;
-	int	count;
+	char	**paths;
+	int		end;
+	int		start;
+	int		count;
 
 	count = 0;
 	end = -1;

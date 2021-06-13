@@ -6,13 +6,13 @@
 /*   By: ehakam <ehakam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/13 17:36:18 by ehakam            #+#    #+#             */
-/*   Updated: 2021/06/13 17:36:31 by ehakam           ###   ########.fr       */
+/*   Updated: 2021/06/13 20:38:52 by ehakam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utility.h"
 
-int		p_error(char *arg, char *message, int code)
+int	p_error(char *arg, char *message, int code)
 {
 	write(2, "pipex: ", 7);
 	if (arg)

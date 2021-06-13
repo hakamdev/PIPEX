@@ -6,17 +6,19 @@
 /*   By: ehakam <ehakam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/13 17:37:42 by ehakam            #+#    #+#             */
-/*   Updated: 2021/06/13 18:39:56 by ehakam           ###   ########.fr       */
+/*   Updated: 2021/06/13 20:36:50 by ehakam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-t_redir *create_redir(t_type type, char *arg)
+t_redir	*create_redir(t_type type, char *arg)
 {
-	t_redir *r = malloc(sizeof(t_redir));
+	t_redir	*r;
+
+	r = malloc(sizeof(t_redir));
 	if (!r)
-		exit(1); // TODO: EMALLOC
+		exit(1);
 	r->arg = arg;
 	r->type = type;
 	return (r);
@@ -28,7 +30,7 @@ t_cmd	*create_cmd(char **av, int index)
 
 	cmd = malloc(sizeof(t_cmd));
 	if (!cmd)
-		exit(1); // TODO: EMALLOC
+		exit(1);
 	if (index == 0)
 		cmd->argv = ft_split(av[2], ' ');
 	else if (index == 1)

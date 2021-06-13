@@ -6,7 +6,7 @@
 /*   By: ehakam <ehakam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/18 19:33:49 by ehakam            #+#    #+#             */
-/*   Updated: 2021/06/13 17:31:34 by ehakam           ###   ########.fr       */
+/*   Updated: 2021/06/13 20:39:59 by ehakam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 char	*ft_substr2(char *str, int from, int to)
 {
-	int i;
-	int len;
-	char *sub;
+	int		i;
+	int		len;
+	char	*sub;
 
 	i = 0;
 	if (!str)
@@ -26,7 +26,7 @@ char	*ft_substr2(char *str, int from, int to)
 		return (NULL);
 	sub = (char *)malloc((to - from + 1) * sizeof(char));
 	if (!sub)
-		exit(1); // TODO: EMALLOC
+		exit(1);
 	while (from < to)
 		sub[i++] = str[from++];
 	sub[i] = '\0';
