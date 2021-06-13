@@ -6,7 +6,7 @@
 /*   By: ehakam <ehakam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/11 18:12:41 by ehakam            #+#    #+#             */
-/*   Updated: 2021/06/13 20:31:43 by ehakam           ###   ########.fr       */
+/*   Updated: 2021/06/13 20:47:58 by ehakam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,7 @@ static void	exec_from_path(t_cmd *cmd, char **env)
 
 static pid_t	execute(t_cmd *cmd, char **env, int fd[2], int index)
 {
-	int		i;
 	pid_t	pid;
-	char	**paths;
 
 	pid = fork();
 	if (pid < 0)

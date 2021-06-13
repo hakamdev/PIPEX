@@ -6,7 +6,7 @@
 /*   By: ehakam <ehakam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/13 17:38:32 by ehakam            #+#    #+#             */
-/*   Updated: 2021/06/13 20:37:32 by ehakam           ###   ########.fr       */
+/*   Updated: 2021/06/13 20:48:33 by ehakam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int	set_redirection(t_redir *redir)
 {
 	int		fd;
 
+	fd = -1;
 	if (redir->type == left)
 		fd = open(redir->arg, O_RDONLY);
 	else if (redir->type == right)
