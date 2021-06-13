@@ -6,7 +6,7 @@
 /*   By: ehakam <ehakam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 22:10:36 by ehakam            #+#    #+#             */
-/*   Updated: 2021/06/11 20:15:09 by ehakam           ###   ########.fr       */
+/*   Updated: 2021/06/13 18:40:47 by ehakam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	get_words(char *s, char c)
 	words = 0;
 	while (s[i])
 	{
-		if (s[i] != c && (s[i + 1] == c || s[i + 1] == CNULL))
+		if (s[i] != c && (s[i + 1] == c || s[i + 1] == '\0'))
 			words++;
 		i++;
 	}
@@ -63,31 +63,35 @@ static char	**fill_out(char *s, char **out, char c)
 		while (s[i] == c)
 			i++;
 		if (s[i] != c)
-			if (!(out[x] = malloc(sizeof(char) * get_chars(&s[i], c) + 1)))
+		{
+			out[x] = malloc(sizeof(char) * get_chars(&s[i], c) + 1);
+			if (!out[x])
 				return (free_all(out, x));
+		}
 		while (s[i] != c && s[i])
 			out[x][xx++] = s[i++];
-		out[x++][xx] = CNULL;
+		out[x++][xx] = '\0';
 		xx = 0;
 	}
 	out[x] = NULL;
 	return (out);
 }
 
-char		**ft_split(const char *ss, char c)
+char	**ft_split(const char *ss, char c)
 {
 	char	**out;
 	char	*s;
 
 	s = (char *)ss;
-	if (!s || *s == CNULL)
+	if (!s || *s == '\0')
 	{
 		out = malloc(sizeof(char *));
 		*out = NULL;
 	}
 	else
 	{
-		if (!(out = malloc((get_words(s, c) + 1) * sizeof(char *))))
+		out = malloc((get_words(s, c) + 1) * sizeof(char *));
+		if (!out)
 			return (NULL);
 		out = fill_out(s, out, c);
 	}
