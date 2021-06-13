@@ -6,7 +6,7 @@
 /*   By: ehakam <ehakam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/11 18:12:41 by ehakam            #+#    #+#             */
-/*   Updated: 2021/06/13 19:03:01 by ehakam           ###   ########.fr       */
+/*   Updated: 2021/06/13 19:27:12 by ehakam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ int		execute(t_cmd *cmd, char **env, int fd[2], int index)
 		}
 		handle_errors(cmd, false, errno);
 	}
-	else if (index == 0)
-		waitpid(pid, &g_status, 0);
+	// else if (index == 0)
+	// 	waitpid(pid, &g_status, 0);
 	return (pid);
 }
 
@@ -76,6 +76,7 @@ int		main(int ac, char **av, char **env)
 	pid[1] = execute(cmd2, env, fd, 1);
 	close(fd[0]);
 	close(fd[1]);
+	waitpid(pid[0], &g_status, 0);
 	waitpid(pid[1], &g_status, 0);
 	return (WEXITSTATUS(g_status));
 }
