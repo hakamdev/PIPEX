@@ -6,7 +6,7 @@
 /*   By: ehakam <ehakam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/11 18:10:53 by ehakam            #+#    #+#             */
-/*   Updated: 2021/06/13 18:51:36 by ehakam           ###   ########.fr       */
+/*   Updated: 2021/06/13 19:43:12 by ehakam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,6 @@
 # include "utility/utility.h"
 # include <err.h>
 # include <errno.h>
-
-//
-# include <stdio.h>
 
 typedef	enum e_bool
 {

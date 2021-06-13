@@ -6,15 +6,15 @@
 /*   By: ehakam <ehakam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/11 18:12:41 by ehakam            #+#    #+#             */
-/*   Updated: 2021/06/13 19:27:12 by ehakam           ###   ########.fr       */
+/*   Updated: 2021/06/13 19:42:44 by ehakam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int		g_status;
+int	g_status;
 
-void	handle_errors(t_cmd *cmd, t_bool ispath, int _errno)
+static void	handle_errors(t_cmd *cmd, t_bool ispath, int _errno)
 {
 	if (_errno == 13)
 		exit(p_error(cmd->argv[0], NULL, 126));
@@ -26,11 +26,27 @@ void	handle_errors(t_cmd *cmd, t_bool ispath, int _errno)
 		exit(p_error(cmd->argv[0], "command not found", 127));
 }
 
-int		execute(t_cmd *cmd, char **env, int fd[2], int index)
+static void	exec_from_path(t_cmd *cmd, char **env)
+{
+	int		i;
+	char	**paths;
+
+	paths = get_paths(getenv("PATH"), cmd->argv[0]);
+	i = -1;
+	while (paths[++i])
+	{
+		execve(paths[i], cmd->argv, env);
+		if (errno != 2)
+			break ;
+	}
+}
+
+static pid_t	execute(t_cmd *cmd, char **env, int fd[2], int index)
 {
 	int		i;
 	pid_t	pid;
 	char	**paths;
+
 	pid = fork();
 	if (pid < 0)
 		exit(p_error(NULL, NULL, 1));
@@ -40,26 +56,15 @@ int		execute(t_cmd *cmd, char **env, int fd[2], int index)
 		if (cmd->redir != NULL)
 			set_redirection(cmd->redir);
 		if (is_path(cmd->argv[0]))
-		{
 			execve(cmd->argv[0], cmd->argv, env);
-			handle_errors(cmd, true, errno);
-		}
-		paths = get_paths(getenv("PATH"), cmd->argv[0]);
-		i = -1;
-		while (paths[++i])
-		{
-			execve(paths[i], cmd->argv, env);
-			if (errno != 2)
-				break ;
-		}
+		else
+			exec_from_path(cmd, env);
 		handle_errors(cmd, false, errno);
 	}
-	// else if (index == 0)
-	// 	waitpid(pid, &g_status, 0);
 	return (pid);
 }
 
-int		main(int ac, char **av, char **env)
+int	main(int ac, char **av, char **env)
 {
 	int		fd[2];
 	pid_t	pid[2];
